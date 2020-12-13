@@ -10,13 +10,32 @@ import re
 ### result. Name them according to the task ID as in the three
 ### examples below. Delete the three examples. The tasks you choose
 ### must be in the data/training directory, not data/evaluation.
-def solve_6a1e5592(x):
-    return x
 
-def solve_b2862040(x):
-    return x
 
-def solve_05269061(x):
+def solve_1b60fb0c(y):
+    x = np.copy(y)
+    i, j = x.shape
+    bottom = i - 1
+    top = 0
+    right = j-1
+    left = 0
+    while (top < i/2):
+        if 1 in x[bottom][:]:
+           if 1 in x[top][:]:
+               existing_values = x[top:bottom, left]
+               if (x[bottom, left:right] == x[top, left:right]).all():
+                   new_values = x[top:bottom, right]
+               else:
+                    new_values = np.roll(x[top:bottom, right], axis=0, shift=1)
+               x[top:bottom, left] = np.where(existing_values == new_values, existing_values, 2)
+           else:
+                top = top + 1
+                left = left + 1
+                continue
+        bottom = bottom - 1
+        top = top + 1
+        left = left + 1
+        right = right - 1
     return x
 
 
@@ -27,7 +46,7 @@ def main():
     # regex to match solve_* functions and extract task IDs
     p = r"solve_([a-f0-9]{8})" 
     tasks_solvers = []
-    # globals() gives a dict containing all global names (variables
+    # globals() gives a dict cpontaining all global names (variables
     # and functions), as name: value pairs.
     for name in globals(): 
         m = re.match(p, name)
