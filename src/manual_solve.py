@@ -1,49 +1,105 @@
-#!/usr/bin/python
+
+"""
+Student name: Vishwa Kumar
+Student ID: 20236183
+Github URL: https://github.com/vishwa6990/ARC
+"""
 
 import os, sys
 import json
 import numpy as np
 import re
+from enum import Enum
 
-### YOUR CODE HERE: write at least three functions which solve
-### specific tasks by transforming the input x and returning the
-### result. Name them according to the task ID as in the three
-### examples below. Delete the three examples. The tasks you choose
-### must be in the data/training directory, not data/evaluation.
+
+# Enum of color names and values to be used in ARC examples
+class Color(Enum):
+    BLACK = 0
+    BLUE = 1
+    RED = 2
+    GREEN = 3
+    YELLOW = 4
+    GREY = 5
+    PINK = 6
+    ORANGE = 7
+    CYAN = 8
+    BROWN = 9
+
 
 def solve_f76d97a5(x):
+    """
+    Given input grid will have two colors filled in it.
+    Input grid will have always grey as one color other could be any other color except black and grey.
+    Output grid will have colors modified in it by applying the following transformations.
+        1. Initialize the output grid with all contents from input grid
+        2. Update all the unique colored squares(except grey color) with black color
+        3. Update all the grey colored squares with unique color present in grid
+
+    Completeness - All available training and test grids for this task are solved correctly
+    """
+    # Generate the output grid by making a copy of the input grid
     output = np.copy(x)
+
+    # Find the unique colors present in input grid, In the given training & test set we will have only two unique colors
     unique_elem = np.unique(output)
     for item in unique_elem:
-        if item != 5:
-            output = np.where(output == item, 0, output)
-            output = np.where(output == 5, item, output)
+        # Apply the transformations only when processing the unique color as the required transformations
+        if item != Color.GREY.value:
+            output = np.where(output == item, Color.BLACK.value, output)  # Update all unique colored squares with black color
+            output = np.where(output == Color.GREY.value, item, output)  # Update all grey colored squares with color present in grid
     return output
 
+
 def solve_c8cbb738(x):
+    """
+    Given input grid could be of any size m * n
+    Output grid will be of size i * i where size i and contents will be determined based on the patterns present in input grid
+    Patterns found in input grid
+        1. Two or more unique colors with a single color prominently present in cells which doesnt
+        2. Shapes like square, rectangle and diamonds could be formed by connecting the same colored cells
+    Transformations
+        1. Determine the size of the biggest square shaped colored cells and generate output grid of that size filled with dominant color
+        2. Now start looking at the different colored cells, map it in the output grid in such a way that it must be in
+           into same shape(rectangle / diamond/ color) and size as present in input grid
+
+    Completeness - All available training and test grids for this task are solved correctly
+    """
+    # Find the unique colors in input grid and number of occurences of each color
     unique_elem = np.unique(x)
     occurences_count = [(elem, (x == elem).sum()) for elem in unique_elem]
+
+    # Find the dominant color and less frequent colors
+    # In the given examples, all less frequent colors are present with equal occurence and map to outside edges in output grid
     maximum_num, max_count = sorted(occurences_count, key=lambda tup: tup[1], reverse=True)[0]
     minimum_num, min_count = sorted(occurences_count, key=lambda tup: tup[1])[0]
+
+    # Find the vertices of the less frequent color and determine the maximum distance in X axis.
+    # Using the calculated distance, find the centre position and generate the output grid with dominant color
     m, n = np.where(x == minimum_num)
     grid_size = np.max(m) - np.min(m) + 1
     centre = int(np.floor(grid_size / 2))
     output = np.full((grid_size, grid_size), maximum_num)
+
+    # Start filling the output grid with other unique colors by making sure the shapes as present in input grid are preserved
+    # Four vertices will also be colored in the below logic
     for item in unique_elem:
         if item != maximum_num:
             m, n = np.where(x == item)
             if len(np.unique(m)) > 2 or len(np.unique(n)) > 2:
+                # Filling the diamond shape by coloring the center in the four edges
                 output[centre, 0] = item
                 output[0, centre] = item
                 output[centre, grid_size - 1] = item
                 output[grid_size - 1, centre] = item
             elif (np.max(m) - np.min(m) == grid_size-1) and len(np.unique(m)) == 2:
+                # Filling the rectangle shaped colored cells by measuring the distance from centre position
                 y_diff = int((np.max(n) - np.min(n))/2)
                 output[0, centre + y_diff] = item
                 output[0, centre - y_diff] = item
                 output[grid_size - 1, centre + y_diff] = item
                 output[grid_size - 1, centre - y_diff] = item
             elif (np.max(n) - np.min(n) == grid_size-1) and len(np.unique(n)) == 2:
+                # Filling the rectangle shaped colored cells by measuring the distance from centre position
                 x_diff = int((np.max(m) - np.min(m))/2)
                 output[centre + x_diff, 0] = item
                 output[centre - x_diff, 0] = item
@@ -51,23 +107,51 @@ def solve_c8cbb738(x):
                 output[centre - x_diff, grid_size - 1] = item
     return output
 
-def solve_1b60fb0c(y):
-    x = np.copy(y)
-    i, j = x.shape
+
+def solve_1b60fb0c(x):
+    """
+    Input and output grid are of same size
+    Input grid will always have only blue color
+    Output grid will have blue and red color (we could generalize this output color detection logic but it will require different color inputs)
+    Patterns
+        1. If top and bottom portion of the grid are identical then left and right of the grid will also be identical
+        2. If top and bottom portion of the grid are shifted at regular interval then left and right of the grid will also be shifted at regular interval
+        3. These patterns are to be applied on corresponding portion of the grid,
+              Like comparing first and last rows, first + 1 and last - 1 rows ...
+              Like comparing first and last columns, first + 1 and last - 1 columns ...
+    Transformations
+        1. Goal is to fill the output grid with red color on the missing blue colored cells which satisfies the above pattern rules
+        2. If bottom row of the grid is shifted by 1 along x axis when compared with top row of the grid
+           Then left column of the grid is shifted by 1 along y axis when compared with right column of the grid
+
+    Completeness - All available training and test grids for this task are solved correctly
+    """
+    # Generate the output grid by copying the input grid
+    output = np.copy(x)
+
+    # Find the shape and initialize the positional arguments to traverse the grid from all 4 sides
+    i, j = output.shape
     bottom = i - 1
     top = 0
     right = j-1
     left = 0
-    while (top < i/2):
-        if 1 in x[bottom][:]:
-           if 1 in x[top][:]:
-               existing_values = x[top:bottom, left]
-               if (x[bottom, left:right] == x[top, left:right]).all():
-                   new_values = x[top:bottom, right]
-               else:
-                    new_values = np.roll(x[top:bottom, right], axis=0, shift=1)
-               x[top:bottom, left] = np.where(existing_values == new_values, existing_values, 2)
-           else:
+
+    # Run the loop to fill the missing cells with the required color until the middle point of grid is reached
+    while top < i/2:
+        if Color.BLUE.value in output[bottom][:]:
+            if Color.BLUE.value in output[top][:]:
+                existing_values = output[top:bottom, left]
+                if (output[bottom, left:right] == output[top, left:right]).all():
+                    # Top and bottom rows are identical, copy the contents from right column to left column
+                    new_values = output[top:bottom, right]
+                else:
+                    # Top and bottom rows are shifted by 1 (only possible scenario with the current test set)
+                    # copy the contents from right column to left column after shifting by 1
+                    new_values = np.roll(output[top:bottom, right], axis=0, shift=1)
+                # Replace the missing blue colored cells with red color
+                output[top:bottom, left] = np.where(existing_values == new_values, existing_values, Color.RED.value)
+            # Skip the top and left alone as current top row does not have blue colored cell in it
+            else:
                 top = top + 1
                 left = left + 1
                 continue
@@ -75,7 +159,7 @@ def solve_1b60fb0c(y):
         top = top + 1
         left = left + 1
         right = right - 1
-    return x
+    return output
 
 
 def main():
@@ -101,7 +185,8 @@ def main():
         json_filename = os.path.join(directory, ID + ".json")
         data = read_ARC_JSON(json_filename)
         test(ID, solve_fn, data)
-    
+
+
 def read_ARC_JSON(filepath):
     """Given a filepath, read in the ARC task data which is in JSON
     format. Extract the train/test input/output pairs of
@@ -149,5 +234,7 @@ def show_result(x, y, yhat):
     # shape, then y == yhat is just a single bool.
     print(np.all(y == yhat))
 
-if __name__ == "__main__": main()
+
+if __name__ == "__main__":
+    main()
 
