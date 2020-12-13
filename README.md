@@ -1,10 +1,6 @@
 # Purpose of this repository
 Repository forked from main ARC repository for solving the assignment problem mentioned as part of NUI Galway 2021 CT-5148 (Programming and Tools for AI) course module. 3 tasks from the data/training are solved using hand coded solutions and updated with the logic in src directory and solved images could be found in the images directory.
 
-Task 1 - f76d97a5.json
-Task 2 - c8cbb738.json
-Task 3 - 1b60fb0c.json
-
 Below is the actual readme contents from the main repository.
 
 # The Abstraction and Reasoning Corpus (ARC)
