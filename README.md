@@ -3,7 +3,7 @@ Repository forked from main ARC repository for solving the assignment problem me
 
 Task 1 - f76d97a5.json
 
-!(https://github.com/vishwa6990/ARC/blob/master/images/f76d97a5.png)
+![Alt text](/images/f76d97a5.jpg?raw=true)
 
 Below is the actual readme contents from the main repository.
 
