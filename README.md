@@ -1,6 +1,9 @@
 # Purpose of this repository
-Repository forked from main repository for solving the assignment problem mentioned as part of NUI Galway 2021 CT-5148 (Programming and Tools for AI) course module.
-3 tasks from the data/training are solved using hand coded solutions and updated with the logic in src directory.
+Repository forked from main ARC repository for solving the assignment problem mentioned as part of NUI Galway 2021 CT-5148 (Programming and Tools for AI) course module. Following three tasks from the data/training are solved using hand coded solutions and updated with the logic in src directory.
+
+Task 1 - f76d97a5.json
+
+!(https://github.com/vishwa6990/ARC/blob/master/images/f76d97a5.png)
 
 Below is the actual readme contents from the main repository.
 
