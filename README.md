@@ -1,5 +1,6 @@
 # Purpose of this repository
 Repository forked from main repository for solving the assignment problem mentioned as part of NUI Galway 2021 CT-5148 (Programming and Tools for AI) course module.
+3 tasks from the data/training are solved using hand coded solutions and updated with the logic in src directory.
 
 Below is the actual readme contents from the main repository.
 
