@@ -11,6 +11,39 @@ import re
 ### examples below. Delete the three examples. The tasks you choose
 ### must be in the data/training directory, not data/evaluation.
 
+# def solve_f76d97a5(x):
+    #return x
+
+def solve_c8cbb738(x):
+    unique_elem = np.unique(x)
+    occurences_count = [(elem, (x == elem).sum()) for elem in unique_elem]
+    maximum_num, max_count = sorted(occurences_count, key=lambda tup: tup[1], reverse=True)[0]
+    minimum_num, min_count = sorted(occurences_count, key=lambda tup: tup[1])[0]
+    m, n = np.where(x == minimum_num)
+    grid_size = np.max(m) - np.min(m) + 1
+    centre = int(np.floor(grid_size / 2))
+    output = np.full((grid_size, grid_size), maximum_num)
+    for item in unique_elem:
+        if item != maximum_num:
+            m, n = np.where(x == item)
+            if len(np.unique(m)) > 2 or len(np.unique(n)) > 2:
+                output[centre, 0] = item
+                output[0, centre] = item
+                output[centre, grid_size - 1] = item
+                output[grid_size - 1, centre] = item
+            elif (np.max(m) - np.min(m) == grid_size-1) and len(np.unique(m)) == 2:
+                y_diff = int((np.max(n) - np.min(n))/2)
+                output[0, centre + y_diff] = item
+                output[0, centre - y_diff] = item
+                output[grid_size - 1, centre + y_diff] = item
+                output[grid_size - 1, centre - y_diff] = item
+            elif (np.max(n) - np.min(n) == grid_size-1) and len(np.unique(n)) == 2:
+                x_diff = int((np.max(m) - np.min(m))/2)
+                output[centre + x_diff, 0] = item
+                output[centre - x_diff, 0] = item
+                output[centre + x_diff, grid_size - 1] = item
+                output[centre - x_diff, grid_size - 1] = item
+    return output
 
 def solve_1b60fb0c(y):
     x = np.copy(y)
