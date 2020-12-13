@@ -3,9 +3,27 @@
 Student name: Vishwa Kumar
 Student ID: 20236183
 Github URL: https://github.com/vishwa6990/ARC
+
+Summary/Reflection:
+Following are the some of the unique python features used in the solve_* functions
+    List comprehension
+    List indexing, traversals, sorting of lists
+    Inline lambda functions
+    Tuple unpacking
+Numpy library is heavily used in solve_* functions. Few important functions/features used from this library are
+    Copying of numpy arrays
+    Initializing array and filling with values
+    Conditional analysis and replacement of array values
+    Rolling the array on a given axis
+Commonalities/Differences between the 3 tasks
+   For couple of tasks, output grid is initialized with the input grid and then transformations are applied.
+   For couple of tasks, unique colors from the input grid are identified and then transformation rules are applied on top of it
+   For two out of 3 tasks, completely different approach was used like in one task had to construct the output grid size
+   based on the patterns/shapes in input grid and in other task had to traverse the grid from all 4 directions(top,bottom,left,right)
+   to find the patterns.
 """
 
-import os, sys
+import os
 import json
 import numpy as np
 import re
