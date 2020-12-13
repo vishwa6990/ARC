@@ -11,8 +11,14 @@ import re
 ### examples below. Delete the three examples. The tasks you choose
 ### must be in the data/training directory, not data/evaluation.
 
-# def solve_f76d97a5(x):
-    #return x
+def solve_f76d97a5(x):
+    output = np.copy(x)
+    unique_elem = np.unique(output)
+    for item in unique_elem:
+        if item != 5:
+            output = np.where(output == item, 0, output)
+            output = np.where(output == 5, item, output)
+    return output
 
 def solve_c8cbb738(x):
     unique_elem = np.unique(x)
