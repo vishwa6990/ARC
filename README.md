@@ -1,3 +1,8 @@
+# Purpose of this repository
+Repository forked from main repository for solving the assignment problem mentioned as part of NUI Galway 2021 CT-5148 Programming and Tools for AI course.
+
+Below is the actual readme contents from the main repository.
+
 # The Abstraction and Reasoning Corpus (ARC)
 
 This repository contains the ARC task data, as well as a browser-based interface for humans to try their hand at solving the tasks manually.
